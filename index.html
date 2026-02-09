@@ -2,7 +2,8 @@
 <html lang="id">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>FAQ Repository</title>
 
     <style>
@@ -10,42 +11,42 @@
             --primary: #2563eb;
             --danger: #dc2626;
             --bg: #f1f5f9;
-            --card: #ffffff;
+            --card: #fff;
             --border: #e5e7eb;
-            --text: #0f172a;
+            --text: #0f172a
         }
 
         * {
-            box-sizing: border-box;
+            box-sizing: border-box
         }
 
         body {
             margin: 0;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: system-ui, sans-serif;
             background: var(--bg);
-            color: var(--text);
+            color: var(--text)
         }
 
         header {
             background: var(--primary);
-            color: white;
+            color: #fff;
             padding: 20px 40px;
             font-size: 22px;
-            font-weight: bold;
+            font-weight: 700
         }
 
         .container {
             display: grid;
             grid-template-columns: 380px 1fr;
             gap: 20px;
-            padding: 30px 40px;
+            padding: 30px 40px
         }
 
         .card {
             background: var(--card);
             border-radius: 10px;
             padding: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, .06);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .06)
         }
 
         input,
@@ -54,39 +55,36 @@
             padding: 10px 12px;
             margin-top: 6px;
             border-radius: 6px;
-            border: 1px solid var(--border);
-            font-size: 14px;
+            border: 1px solid var(--border)
         }
 
         textarea {
-            min-height: 90px;
+            min-height: 90px
         }
 
         button {
             padding: 10px 14px;
-            border: none;
+            border: 0;
             border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
+            cursor: pointer
         }
 
         .btn-primary {
             background: var(--primary);
-            color: white;
-            width: 100%;
+            color: #fff;
+            width: 100%
         }
 
         .btn-danger {
             background: var(--danger);
-            color: white;
+            color: #fff
         }
 
         .btn-secondary {
             background: #64748b;
-            color: white;
+            color: #fff
         }
 
-        /* TAG INPUT */
         .tag-input {
             display: flex;
             flex-wrap: wrap;
@@ -94,83 +92,67 @@
             padding: 8px;
             border: 1px solid var(--border);
             border-radius: 6px;
-            margin-top: 6px;
-            position: relative;
+            position: relative
         }
 
         .tag-input input {
-            border: none;
+            border: 0;
             flex: 1;
-            outline: none;
+            outline: 0
         }
 
         .tag {
             padding: 4px 10px;
             border-radius: 14px;
-            color: white;
+            color: #fff;
             font-size: 12px;
             display: inline-flex;
-            align-items: center;
+            align-items: center
         }
 
         .tag span {
             margin-left: 6px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 700
         }
 
-        /* SUGGESTION */
         .suggestions {
             position: absolute;
             top: 100%;
             left: 0;
             right: 0;
-            background: white;
+            background: #fff;
             border: 1px solid var(--border);
             border-radius: 6px;
-            z-index: 20;
+            z-index: 10
         }
 
         .suggestions div {
             padding: 8px 12px;
-            cursor: pointer;
+            cursor: pointer
         }
 
         .suggestions div:hover {
-            background: var(--bg);
+            background: var(--bg)
         }
 
-        /* FILTER */
         .filter-bar {
-            margin-bottom: 10px;
+            margin-bottom: 10px
         }
 
         .filter-bar .tag {
             cursor: pointer;
-            margin: 4px 4px 0 0;
+            margin: 4px 4px 0 0
         }
 
-        /* FAQ */
         .faq-item {
             border-bottom: 1px solid var(--border);
             padding: 16px 0;
+            position: relative
         }
 
         .faq-item:last-child {
-            border-bottom: none;
-        }
-
-        .faq-actions {
-            margin-top: 10px;
-        }
-
-        .faq-actions button {
-            margin-right: 6px;
-        }
-
-        /*Tanggal*/
-        .faq-item {
-            position: relative;
+            border-bottom: 0
         }
 
         .faq-meta {
@@ -178,366 +160,88 @@
             top: 16px;
             right: 0;
             font-size: 11px;
-            color: #64748b;
-            white-space: nowrap;
+            color: #64748b
+        }
+
+        .faq-actions {
+            margin-top: 10px
         }
     </style>
 </head>
 
 <body>
-
     <header>📚 Internal FAQ Repository</header>
 
     <div class="container">
-
-        <!-- FORM -->
         <div class="card">
             <h2 id="formTitle">Tambah FAQ</h2>
             <form id="faqForm">
-                <input type="hidden" id="faqId">
-
+                <input type="hidden" id="faqId" />
                 <label>Pertanyaan</label>
-                <input id="question" required>
-
+                <input id="question" required />
                 <label>Jawaban</label>
                 <textarea id="answer" required></textarea>
-
                 <label>Kategori / Tag</label>
                 <div class="tag-input" id="tagBox">
-                    <input id="tagInput" placeholder="Ketik tag lalu Enter">
+                    <input id="tagInput" placeholder="Ketik tag lalu Enter" />
                     <div class="suggestions" id="suggestions"></div>
                 </div>
-
-                <button class="btn-primary" type="submit">Simpan FAQ</button>
+                <button class="btn-primary">Simpan FAQ</button>
             </form>
         </div>
 
-        <!-- LIST -->
         <div class="card">
             <h2>Daftar FAQ</h2>
-            <input id="searchInput" placeholder="🔍 Search FAQ...">
+            <input id="searchInput" placeholder="🔍 Search FAQ..." />
             <div class="filter-bar" id="categoryFilter"></div>
             <div id="faq"></div>
         </div>
-
     </div>
 
     <script>
+        const API_URL = "https://faq-backend-m8ve.onrender.com/api/faq";
+
+        const faqForm = document.getElementById('faqForm');
+        const faq = document.getElementById('faq');
+        const searchInput = document.getElementById('searchInput');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const tagBox = document.getElementById('tagBox');
+        const tagInput = document.getElementById('tagInput');
+        const suggestions = document.getElementById('suggestions');
+        const formTitle = document.getElementById('formTitle');
+        const faqId = document.getElementById('faqId');
+        const question = document.getElementById('question');
+        const answer = document.getElementById('answer');
+
         let faqs = [];
         let tags = [];
         let allTags = [];
         let activeFilter = null;
 
-        /* UTIL */
-        const tagColor = t => {
-            let h = 0;
-            for (let i = 0; i < t.length; i++) {
-                h = t.charCodeAt(i) + ((h << 5) - h);
-            }
-            return `hsl(${h % 360},70%,50%)`;
-        };
+        const tagColor = t => `hsl(${[...t].reduce((a, c) => a + c.charCodeAt(0), 0) % 360},70%,50%)`;
+        const formatDate = d => new Date(d).toLocaleString('id-ID');
 
-        const debounce = (fn, d = 300) => {
-            let t; return (...a) => {
-                clearTimeout(t);
-                t = setTimeout(() => fn(...a), d);
-            };
-        };
+        function clearTags() { tags = []; tagBox.querySelectorAll('.tag').forEach(t => t.remove()); }
+        function addTag(tag) { if (!tag || tags.includes(tag)) return; tags.push(tag); const el = document.createElement('div'); el.className = 'tag'; el.style.background = tagColor(tag); el.innerHTML = `${tag}<span>×</span>`; el.querySelector('span').onclick = () => removeTag(tag); tagBox.insertBefore(el, tagInput); }
+        function removeTag(tag) { tags = tags.filter(t => t !== tag);[...tagBox.querySelectorAll('.tag')].forEach(e => e.textContent.includes(tag) && e.remove()); }
 
-        function formatDateTime(iso) {
-            if (!iso) return "";
+        async function loadFAQ() { const res = await fetch(API_URL); faqs = await res.json(); deriveTags(); renderFilters(); renderFAQ(); }
+        function deriveTags() { const s = new Set(); faqs.forEach(f => f.category?.split(',').forEach(t => s.add(t.trim()))); allTags = [...s]; }
 
-            const d = new Date(iso);
-            if (isNaN(d)) return "";
+        function renderFilters() { categoryFilter.innerHTML = `<span class="tag" style="background:#64748b" onclick="activeFilter=null;renderFAQ()">All</span>`; allTags.forEach(t => categoryFilter.innerHTML += `<span class="tag" style="background:${tagColor(t)}" onclick="activeFilter='${t}';renderFAQ()">${t}</span>`); }
 
-            return d.toLocaleString("id-ID", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit"
-            });
-        }
-        /* ====================== ADD THESE FUNCTIONS HERE ====================== */
-        /* BETTER TAG MANAGEMENT FUNCTIONS */
+        function renderFAQ() { faq.innerHTML = ''; const key = searchInput.value.toLowerCase(); const list = faqs.filter(f => { const tags = f.category?.split(',') || []; if (activeFilter && !tags.includes(activeFilter)) return false; return [f.question, f.answer, f.category].join(' ').toLowerCase().includes(key); }); if (!list.length) { faq.innerHTML = '<p>📭 Tidak ada FAQ</p>'; return; } list.forEach(f => { const tagArr = f.category?.split(',').filter(Boolean) || []; faq.innerHTML += `<div class="faq-item"><div class="faq-meta">${formatDate(f.updated_at || f.created_at)}</div><strong>${f.question}</strong><p>${f.answer}</p>${tagArr.map(t => `<span class="tag" style="background:${tagColor(t)}">${t}</span>`).join(' ')}<div class="faq-actions"><button class="btn-secondary" onclick="editFAQ(${f.id})">Edit</button> <button class="btn-danger" onclick="deleteFAQ(${f.id})">Delete</button></div></div>`; }); }
 
-        // Function to properly clear tags
-        function clearTags() {
-            tags = [];
-            const tagElements = tagBox.querySelectorAll('.tag');
-            tagElements.forEach(tag => tag.remove());
-        }
+        faqForm.onsubmit = async e => { e.preventDefault(); const payload = { question: question.value.trim(), answer: answer.value.trim(), category: tags.join(',') }; const method = faqId.value ? 'PUT' : 'POST'; const url = faqId.value ? `${API_URL}/${faqId.value}` : API_URL; const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); if (!res.ok) return alert('Gagal menyimpan'); faqForm.reset(); faqId.value = ''; formTitle.textContent = 'Tambah FAQ'; clearTags(); await loadFAQ(); };
 
-        // Update the removeTag function
-        function removeTag(tagToRemove) {
-            tags = tags.filter(t => t !== tagToRemove);
-            const tagElements = tagBox.querySelectorAll('.tag');
-            tagElements.forEach(el => {
-                if (el.textContent.includes(tagToRemove)) {
-                    el.remove();
-                }
-            });
-        }
+        function editFAQ(id) { const f = faqs.find(x => x.id === id); question.value = f.question; answer.value = f.answer; faqId.value = id; formTitle.textContent = 'Edit FAQ'; clearTags(); f.category?.split(',').forEach(t => addTag(t.trim())); }
+        async function deleteFAQ(id) { if (!confirm('Hapus FAQ ini?')) return; await fetch(`${API_URL}/${id}`, { method: 'DELETE' }); await loadFAQ(); }
 
-        // Update the addTag function
-        function addTag(tag) {
-            if (!tag || tags.includes(tag)) return;
-            tags.push(tag);
+        searchInput.oninput = renderFAQ;
+        tagInput.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); addTag(tagInput.value.trim()); tagInput.value = ''; suggestions.innerHTML = ''; } };
 
-            const el = document.createElement("div");
-            el.className = "tag";
-            el.style.background = tagColor(tag);
-            el.innerHTML = `${tag}<span onclick="removeTag('${tag}')">×</span>`;
-
-            // Insert before the input
-            tagBox.insertBefore(el, tagInput);
-        }
-
-        /* ====================== END OF NEW FUNCTIONS ====================== */
-
-        /* LOAD FAQ */
-        async function loadFAQ() {
-            loadFromStorage();
-        }
-
-
-        /*local storage*/
-        function saveToStorage() {
-            localStorage.setItem("faqs", JSON.stringify(faqs));
-        }
-
-        function loadFromStorage() {
-            faqs = JSON.parse(localStorage.getItem("faqs") || "[]");
-        }
-
-        /* DERIVE TAG */
-        function extractTagsFromFAQ() {
-            const set = new Set();
-            faqs.forEach(f => {
-                if (!f.category) return;
-                f.category.split(",").forEach(t => set.add(t.trim()));
-            });
-            allTags = [...set];
-        }
-
-        /* INIT */
-        async function initApp() {
-            try {
-                faq.innerHTML = "<p>⏳ Loading FAQ...</p>";
-                await loadFAQ();
-                extractTagsFromFAQ();
-                loadFilters();
-                renderFAQ();
-            } catch {
-                faq.innerHTML = "<p style='color:red'>❌ Gagal memuat FAQ</p>";
-            }
-        }
-
-        /* TAG INPUT */
-        tagInput.oninput = () => {
-            suggestions.innerHTML = "";
-            const val = tagInput.value.toLowerCase();
-            if (!val) return;
-            allTags
-                .filter(t => t.toLowerCase().includes(val) && !tags.includes(t))
-                .forEach(t => {
-                    const d = document.createElement("div");
-                    d.textContent = t;
-                    d.onclick = () => {
-                        addTag(t);
-                        tagInput.value = "";
-                        suggestions.innerHTML = "";
-                    };
-                    suggestions.appendChild(d);
-                });
-        };
-
-        tagInput.onkeydown = e => {
-            if (e.key === "Enter" && tagInput.value.trim()) {
-                e.preventDefault();
-                addTag(tagInput.value.trim());  // Updated to use new addTag function
-                tagInput.value = "";
-                suggestions.innerHTML = "";
-            }
-        };
-
-        /* REMOVE THE OLD addTag FUNCTION - It's now replaced by the new one above */
-        /* 
-        function addTag(tag) {
-            if (tags.includes(tag)) return;
-            tags.push(tag);
-            const el = document.createElement("div");
-            el.className = "tag";
-            el.style.background = tagColor(tag);
-            el.innerHTML = `${tag}<span onclick="removeTag('${tag}')">×</span>`;
-            tagBox.insertBefore(el, tagInput);
-        }
-    
-        function removeTag(tag) {
-            tags = tags.filter(t => t !== tag);
-            [...tagBox.children].forEach(el => el.textContent.includes(tag) && el.remove());
-        }
-        */
-
-        /* FILTER */
-        function loadFilters() {
-            categoryFilter.innerHTML =
-                `<span class="tag" style="background:#64748b" onclick="activeFilter=null;renderFAQ()">All</span>`;
-            allTags.forEach(t => {
-                categoryFilter.innerHTML +=
-                    `<span class="tag" style="background:${tagColor(t)}"
-             onclick="activeFilter='${t}';renderFAQ()">${t}</span>`;
-            });
-        }
-
-        /* RENDER */
-        function renderFAQ() {
-            faq.innerHTML = "";
-            const key = searchInput.value.toLowerCase();
-
-            if (!faqs.length) {
-                faq.innerHTML = "<p>📭 Belum ada FAQ</p>";
-                return;
-            }
-
-            faqs.forEach(f => {
-                const tagArr = f.category
-                    ? f.category.split(",").map(t => t.trim()).filter(Boolean)
-                    : [];
-
-                if (activeFilter && !tagArr.includes(activeFilter)) return;
-                const text = [f.question, f.answer, ...tagArr].join(" ").toLowerCase();
-                if (!text.includes(key)) return;
-
-                faq.innerHTML += `
-<div class="faq-item">
-<div class="faq-meta">
-    ${f.updated_at && f.updated_at !== f.created_at ? "✏️" : "🆕"}
-    ${formatDateTime(f.updated_at || f.created_at)}
-</div>
-
-    <strong>${f.question}</strong>
-    <p>${f.answer}</p>
-
-    ${tagArr.map(t =>
-                    `<span class="tag" style="background:${tagColor(t)}">${t}</span>`
-                ).join(" ")}
-
-    <div class="faq-actions">
-        <button class="btn-secondary" onclick="editFAQ(${f.id})">Edit</button>
-        <button class="btn-danger" onclick="deleteFAQ(${f.id})">Delete</button>
-    </div>
-</div>`;
-
-
-            });
-
-            if (!faq.innerHTML) faq.innerHTML = "<p>📭 Tidak ada FAQ ditemukan</p>";
-        }
-
-        /* SEARCH */
-        searchInput.oninput = debounce(renderFAQ);
-
-        /* CRUD - UPDATE THIS FUNCTION */
-        faqForm.onsubmit = async e => {
-            e.preventDefault();
-
-            // Validation
-            if (!question.value.trim() || !answer.value.trim()) {
-                alert("Pertanyaan dan jawaban harus diisi!");
-                return;
-            }
-
-            console.log("📤 Sending data:", {
-                question: question.value.trim(),
-                answer: answer.value.trim(),
-                category: tags.join(",")
-            });
-
-            if (faqId.value) {
-                const idx = faqs.findIndex(f => f.id == faqId.value);
-                faqs[idx] = {
-                    ...faqs[idx],
-                    question: question.value.trim(),
-                    answer: answer.value.trim(),
-                    category: tags.join(","),
-                    updated_at: new Date().toISOString()
-                };
-            } else {
-                faqs.push({
-                    id: Date.now(),
-                    question: question.value.trim(),
-                    answer: answer.value.trim(),
-                    category: tags.join(","),
-                    created_at: new Date().toISOString()
-                });
-            }
-
-            saveToStorage();
-            faqForm.reset();
-            faqId.value = "";
-            clearTags();
-            initApp();
-
-
-            console.log("📥 Response status:", response.status);
-            console.log("📥 Response headers:", [...response.headers.entries()]);
-
-            const result = await response.json();
-            console.log("📥 Response data:", result);
-
-            if (!response.ok) {
-                throw new Error(result.error || "Failed to save");
-            }
-
-            // Reset form PROPERLY
-            faqForm.reset();
-            faqId.value = "";
-            formTitle.textContent = "Tambah FAQ";
-
-            // Use the new clearTags function
-            clearTags();
-
-            // Clear suggestions
-            suggestions.innerHTML = "";
-
-            // Reload app
-            await initApp();
-
-        } catch (error) {
-            console.error("❌ Error saving FAQ:", error);
-            alert("Gagal menyimpan FAQ. Silakan coba lagi.");
-        }
-        };
-
-        function editFAQ(id) {
-            const f = faqs.find(x => x.id === id);
-            question.value = f.question;
-            answer.value = f.answer;
-            faqId.value = id;
-            formTitle.textContent = "Edit FAQ";
-
-            // Use clearTags instead of manual removal
-            clearTags();
-
-            // Add tags using new addTag function
-            if (f.category) {
-                f.category.split(",").forEach(tag => addTag(tag.trim()));
-            }
-        }
-
-        function deleteFAQ(id) {
-            if (!confirm("Hapus FAQ ini?")) return;
-            faqs = faqs.filter(f => f.id !== id);
-            saveToStorage();
-            initApp();
-        }
-
-
-
-        initApp();
+        loadFAQ();
     </script>
-
 </body>
 
 </html>
