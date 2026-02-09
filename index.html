@@ -219,26 +219,89 @@
         let activeFilter = null;
 
         const tagColor = t => `hsl(${[...t].reduce((a, c) => a + c.charCodeAt(0), 0) % 360},70%,50%)`;
-        const formatDate = d => new Date(d).toLocaleString('id-ID');
+
+        function formatDate(d) {
+            if (!d) return '';
+            const date = new Date(d);
+            if (isNaN(date.getTime())) return '';
+            return date.toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
 
         function clearTags() { tags = []; tagBox.querySelectorAll('.tag').forEach(t => t.remove()); }
         function addTag(tag) { if (!tag || tags.includes(tag)) return; tags.push(tag); const el = document.createElement('div'); el.className = 'tag'; el.style.background = tagColor(tag); el.innerHTML = `${tag}<span>×</span>`; el.querySelector('span').onclick = () => removeTag(tag); tagBox.insertBefore(el, tagInput); }
         function removeTag(tag) { tags = tags.filter(t => t !== tag);[...tagBox.querySelectorAll('.tag')].forEach(e => e.textContent.includes(tag) && e.remove()); }
 
         async function loadFAQ() { const res = await fetch(API_URL); faqs = await res.json(); deriveTags(); renderFilters(); renderFAQ(); }
-        function deriveTags() { const s = new Set(); faqs.forEach(f => f.category?.split(',').forEach(t => s.add(t.trim()))); allTags = [...s]; }
 
-        function renderFilters() { categoryFilter.innerHTML = `<span class="tag" style="background:#64748b" onclick="activeFilter=null;renderFAQ()">All</span>`; allTags.forEach(t => categoryFilter.innerHTML += `<span class="tag" style="background:${tagColor(t)}" onclick="activeFilter='${t}';renderFAQ()">${t}</span>`); }
+        function deriveTags() {
+            const s = new Set();
+            faqs.forEach(f => {
+                if (!f.category || typeof f.category !== 'string') return;
+                f.category.split(',').map(t => t.trim()).filter(Boolean).forEach(t => s.add(t));
+            });
+            allTags = [...s];
+        }
 
-        function renderFAQ() { faq.innerHTML = ''; const key = searchInput.value.toLowerCase(); const list = faqs.filter(f => { const tags = f.category?.split(',') || []; if (activeFilter && !tags.includes(activeFilter)) return false; return [f.question, f.answer, f.category].join(' ').toLowerCase().includes(key); }); if (!list.length) { faq.innerHTML = '<p>📭 Tidak ada FAQ</p>'; return; } list.forEach(f => { const tagArr = f.category?.split(',').filter(Boolean) || []; faq.innerHTML += `<div class="faq-item"><div class="faq-meta">${formatDate(f.updated_at || f.created_at)}</div><strong>${f.question}</strong><p>${f.answer}</p>${tagArr.map(t => `<span class="tag" style="background:${tagColor(t)}">${t}</span>`).join(' ')}<div class="faq-actions"><button class="btn-secondary" onclick="editFAQ(${f.id})">Edit</button> <button class="btn-danger" onclick="deleteFAQ(${f.id})">Delete</button></div></div>`; }); }
+        function renderFilters() {
+            categoryFilter.innerHTML = `<span class="tag" style="background:#64748b" onclick="activeFilter=null;renderFAQ()">All</span>`;
+            allTags.forEach(t => {
+                categoryFilter.innerHTML += `<span class="tag" style="background:${tagColor(t)}" onclick="activeFilter='${t}';renderFAQ()">${t}</span>`;
+            });
+        }
 
-        faqForm.onsubmit = async e => { e.preventDefault(); const payload = { question: question.value.trim(), answer: answer.value.trim(), category: tags.join(',') }; const method = faqId.value ? 'PUT' : 'POST'; const url = faqId.value ? `${API_URL}/${faqId.value}` : API_URL; const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); if (!res.ok) return alert('Gagal menyimpan'); faqForm.reset(); faqId.value = ''; formTitle.textContent = 'Tambah FAQ'; clearTags(); await loadFAQ(); };
+        function renderFAQ() {
+            faq.innerHTML = '';
+            const key = searchInput.value.toLowerCase();
+            const list = faqs.filter(f => {
+                const tagArr = f.category?.split(',').map(t => t.trim()) || [];
+                if (activeFilter && !tagArr.includes(activeFilter)) return false;
+                return [f.question, f.answer, f.category].join(' ').toLowerCase().includes(key);
+            });
 
-        function editFAQ(id) { const f = faqs.find(x => x.id === id); question.value = f.question; answer.value = f.answer; faqId.value = id; formTitle.textContent = 'Edit FAQ'; clearTags(); f.category?.split(',').forEach(t => addTag(t.trim())); }
+            if (!list.length) { faq.innerHTML = '<p>📭 Tidak ada FAQ</p>'; return; }
+
+            list.forEach(f => {
+                const tagArr = f.category?.split(',').filter(Boolean) || [];
+                faq.innerHTML += `<div class="faq-item">
+      <div class="faq-meta">${formatDate(f.updated_at || f.created_at)}</div>
+      <strong>${f.question}</strong>
+      <p>${f.answer}</p>
+      ${tagArr.map(t => `<span class="tag" style="background:${tagColor(t)}">${t}</span>`).join(' ')}
+      <div class="faq-actions">
+        <button class="btn-secondary" onclick="editFAQ(${f.id})">Edit</button>
+        <button class="btn-danger" onclick="deleteFAQ(${f.id})">Delete</button>
+      </div>
+    </div>`;
+            });
+        }
+
+        faqForm.onsubmit = async e => {
+            e.preventDefault();
+            const payload = {
+                question: question.value.trim(),
+                answer: answer.value.trim(),
+                category: tags.join(','),
+                updated_at: new Date().toISOString()
+            };
+
+            const method = faqId.value ? 'PUT' : 'POST';
+            const url = faqId.value ? `${API_URL}/${faqId.value}` : API_URL;
+
+            const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            if (!res.ok) return alert('Gagal menyimpan');
+
+            faqForm.reset(); faqId.value = ''; formTitle.textContent = 'Tambah FAQ'; clearTags(); await loadFAQ();
+        };
+
+        function editFAQ(id) {
+            const f = faqs.find(x => x.id === id);
+            question.value = f.question; answer.value = f.answer; faqId.value = id; formTitle.textContent = 'Edit FAQ'; clearTags(); f.category?.split(',').forEach(t => addTag(t.trim()));
+        }
+
         async function deleteFAQ(id) { if (!confirm('Hapus FAQ ini?')) return; await fetch(`${API_URL}/${id}`, { method: 'DELETE' }); await loadFAQ(); }
 
         searchInput.oninput = renderFAQ;
-        tagInput.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); addTag(tagInput.value.trim()); tagInput.value = ''; suggestions.innerHTML = ''; } };
+        tagInput.onkeydown = e => { if (e.key === 'Enter' && tagInput.value.trim()) { e.preventDefault(); addTag(tagInput.value.trim()); tagInput.value = ''; suggestions.innerHTML = ''; } };
 
         loadFAQ();
     </script>
