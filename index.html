@@ -297,9 +297,17 @@
 
         /* LOAD FAQ */
         async function loadFAQ() {
-            const res = await fetch("/api/faq");
-            if (!res.ok) throw new Error("Gagal load FAQ");
-            faqs = await res.json();
+            loadFromStorage();
+        }
+
+
+        /*local storage*/
+        function saveToStorage() {
+            localStorage.setItem("faqs", JSON.stringify(faqs));
+        }
+
+        function loadFromStorage() {
+            faqs = JSON.parse(localStorage.getItem("faqs") || "[]");
         }
 
         /* DERIVE TAG */
@@ -446,45 +454,60 @@
                 category: tags.join(",")
             });
 
-            try {
-                const response = await fetch(faqId.value ? `/api/faq/${faqId.value}` : "/api/faq", {
-                    method: faqId.value ? "PUT" : "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        question: question.value.trim(),
-                        answer: answer.value.trim(),
-                        category: tags.join(",")
-                    })
+            if (faqId.value) {
+                const idx = faqs.findIndex(f => f.id == faqId.value);
+                faqs[idx] = {
+                    ...faqs[idx],
+                    question: question.value.trim(),
+                    answer: answer.value.trim(),
+                    category: tags.join(","),
+                    updated_at: new Date().toISOString()
+                };
+            } else {
+                faqs.push({
+                    id: Date.now(),
+                    question: question.value.trim(),
+                    answer: answer.value.trim(),
+                    category: tags.join(","),
+                    created_at: new Date().toISOString()
                 });
-
-                console.log("📥 Response status:", response.status);
-                console.log("📥 Response headers:", [...response.headers.entries()]);
-
-                const result = await response.json();
-                console.log("📥 Response data:", result);
-
-                if (!response.ok) {
-                    throw new Error(result.error || "Failed to save");
-                }
-
-                // Reset form PROPERLY
-                faqForm.reset();
-                faqId.value = "";
-                formTitle.textContent = "Tambah FAQ";
-
-                // Use the new clearTags function
-                clearTags();
-
-                // Clear suggestions
-                suggestions.innerHTML = "";
-
-                // Reload app
-                await initApp();
-
-            } catch (error) {
-                console.error("❌ Error saving FAQ:", error);
-                alert("Gagal menyimpan FAQ. Silakan coba lagi.");
             }
+
+            saveToStorage();
+            faqForm.reset();
+            faqId.value = "";
+            clearTags();
+            initApp();
+
+
+            console.log("📥 Response status:", response.status);
+            console.log("📥 Response headers:", [...response.headers.entries()]);
+
+            const result = await response.json();
+            console.log("📥 Response data:", result);
+
+            if (!response.ok) {
+                throw new Error(result.error || "Failed to save");
+            }
+
+            // Reset form PROPERLY
+            faqForm.reset();
+            faqId.value = "";
+            formTitle.textContent = "Tambah FAQ";
+
+            // Use the new clearTags function
+            clearTags();
+
+            // Clear suggestions
+            suggestions.innerHTML = "";
+
+            // Reload app
+            await initApp();
+
+        } catch (error) {
+            console.error("❌ Error saving FAQ:", error);
+            alert("Gagal menyimpan FAQ. Silakan coba lagi.");
+        }
         };
 
         function editFAQ(id) {
@@ -503,19 +526,13 @@
             }
         }
 
-        async function deleteFAQ(id) {
+        function deleteFAQ(id) {
             if (!confirm("Hapus FAQ ini?")) return;
-
-            const res = await fetch(`/api/faq/${id}`, { method: "DELETE" });
-            const data = await res.json();
-
-            if (!res.ok) {
-                alert(data.error || "Gagal menghapus FAQ");
-                return;
-            }
-
+            faqs = faqs.filter(f => f.id !== id);
+            saveToStorage();
             initApp();
         }
+
 
 
         initApp();
